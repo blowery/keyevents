@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Event Logger</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.4/dojo/dojo.xd.js" type="text/javascript"></script>
+	<script type="text/javascript" charset="utf-8">
+	  dojo.ready(function(){
+	    
+	    var theInput = dojo.byId("theInput");
+	    
+	    if(window.addEventListener) {
+	      // branch for browers that implement the w3c spec for event listening
+	      theInput.addEventListener("keydown", keydownListener, true);
+	      theInput.addEventListener("keypress", keypressListener, true);
+	      theInput.addEventListener("keyup", keyupListener, true);
+	    } else if(window.attachEvent) {
+	      // branch for browers that implement IE's style of event listening
+	      theInput.attachEvent("onkeydown", keydownListener);
+	      theInput.attachEvent("onkeypress", keypressListener);
+	      theInput.attachEvent("onkeyup", keyupListener);
+	    }
+	    
+	  });
+	  
+	  var keyUnMap = {};
+	  (function(){
+	    var keys = dojo.keys;
+	    for(var k in keys) {
+	      keyUnMap[keys[k]] = "&lt;" + k + "&gt;";
+	    }
+	    
+	  })();
+	  
+	  function keyOrCharFromEvent(evt) {
+	    if(evt.charCode) return String.fromCharCode(evt.charCode);
+	    if(evt.keyCode in keyUnMap) return keyUnMap[evt.keyCode];
+	    return "&lt; " + String.fromCharCode(evt.keyCode) + "&gt;";
+	  }
+	  
+	  function writeDetails(div, evt){
+	    var props = [
+	      /Key$/,
+	      /Code$/
+	    ];
+	    var list = dojo.place("<dl></dl>", div);
+	    
+	    for(var key in evt) {
+	      if(key.search(/(Key|Code)$/) > -1) {
+	        dojo.place("<dt>" + key + "</dt>", list);
+	        if(typeof evt[key] != "number") 
+	          dojo.place("<dd>" + evt[key] + "</dd>", list);
+	        else 
+	          dojo.place("<dd>0x" + evt[key].toString(16) + "</dd>", list);
+	        
+	      }
+	    }
+	  }
+	  
+	  function logKeyEvent(name, evt) {
+	    console.log(evt);
+	    var holder = dojo.place("<div class='event'><span class='type'>" + name + "</span><div class='key " + name + "'><h2>" + keyOrCharFromEvent(evt) + "</h2></div><div class='details'></div></div>", dojo.byId("log"));
+	    var details = dojo.place("<div class='details'></div>", holder);
+	    writeDetails(details, evt);
+	    //setTimeout(function() { dojo.fadeOut({ node: holder, onEnd: dojo.destroy }).play(); }, 5000);
+	  }
+	  
+	  function keydownListener(evt) {
+	    logKeyEvent("keydown", evt);
+	  }
+	  
+	  function keypressListener(evt) {
+	    logKeyEvent("keypress", evt);
+	  }
+	  
+	  function keyupListener(evt) {
+	    logKeyEvent("keyup", evt);
+	  }
+	</script>
+	<style type="text/css" media="screen">
+	
+	  html, body {
+	    font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+	  }
+	
+	 .event {
+	   margin: 1em;
+	   float: left;
+	   text-align: center;
+	   position: relative;
+	 }
+	 
+	 .event .type {
+	   color: rgba(0,0,0,.7);
+	   font-size: .7em;
+	   font-weight: bold;
+	   position: absolute;
+	   left: 0px;
+	   top: 1em;
+	   width: 100%;
+	   text-align: center;
+	 }
+	 
+	 .keypress { 
+	    background-color: #bbf;
+	    border-color: #99f;
+	  }
+	  
+	  .keydown {
+	    background-color: #bfb;
+	    border-color: #9f9;
+	  }
+	  
+	  .keyup {
+	    background-color: #fbb;
+	    border-color: #f99;
+	  }
+	   
+	 .event .key {
+	   font-size: 1em;
+	   font-weight: bold;
+	   height: 9em;
+ 	   width: 9em;
+ 	   line-height: 9em;
+ 	   border: 1px solid #999;
+ 	   -moz-border-radius: .5em;
+ 	   -webkit-border-radius: .5em;
+ 	   border-radius: .5em;
+ 	   overflow: hidden;
+ 	   text-overflow: ellipsis;
+	 }
+	 
+	 .event h2 { margin: 0; padding: 0; }
+	 
+	 .event .details {
+	   color: #999;
+	   font-size: .7em;
+	   text-align: left;
+	   margin: 1em;
+	 }
+	 
+	 .details dt {
+	   float: left;
+	   width: 5em;
+	   clear: left;
+	 }
+	 
+	 .details dd {
+	   float: left;
+	 }
+	 
+	</style>
+</head>
+<body>
+  <input type="text" id="theInput" placeholder="Select Me" />
+  <div id="log"></div>
+</body>
+</html>
