@@ -5,6 +5,7 @@
 	<title>Event Logger</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.4/dojo/dojo.xd.js" type="text/javascript"></script>
 	<script type="text/javascript" charset="utf-8">
+	  dojo.require("dojo.NodeList-fx");
 	  dojo.ready(function(){
 	    
 	    var theInput = dojo.byId("theInput");
@@ -22,6 +23,8 @@
 	    }
 	    
 	    theInput.focus();
+	    
+	    dojo.connect(dojo.byId("clearIt"), "onclick", clearLog);
 	    
 	  });
 	  
@@ -65,6 +68,11 @@
 	    var details = dojo.place("<div class='details'></div>", holder);
 	    writeDetails(details, evt);
 	    //setTimeout(function() { dojo.fadeOut({ node: holder, onEnd: dojo.destroy }).play(); }, 5000);
+	  }
+	  
+	  function clearLog(evt) {
+	    evt.preventDefault();
+	    dojo.query(".event").fadeOut({ onEnd: dojo.destroy }).play();
 	  }
 	  
 	  function keydownListener(evt) {
@@ -154,7 +162,7 @@
 	</style>
 </head>
 <body>
-  <input type="text" id="theInput" placeholder="Select Me" />
+  <input type="text" id="theInput" placeholder="Select Me" /> <button id="clearIt" type="button">Clear</button>
   <div id="log"></div>
 </body>
 </html>
