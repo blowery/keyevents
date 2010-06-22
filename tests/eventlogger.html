@@ -39,9 +39,12 @@
 	  
 	  function keyOrCharFromEvent(evt) {
 	    if(evt.charCode) return String.fromCharCode(evt.charCode);
+	    if(dojo.isIE && evt.type=="keypress") return String.fromCharCode(evt.keyCode);
 	    if(evt.keyCode in keyUnMap) return keyUnMap[evt.keyCode];
 	    return "&lt; " + String.fromCharCode(evt.keyCode) + "&gt;";
 	  }
+	  
+	  
 	  
 	  function writeDetails(div, evt){
 	    var props = [
