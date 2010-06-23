@@ -44,29 +44,35 @@
 	    return "&lt; " + String.fromCharCode(evt.keyCode) + "&gt;";
 	  }
 	  
-	  
+	  function asHex(num) { return num === undefined ? "undefined" : isNaN(num) ? "NaN" : "0x" + num.toString(16); };
+	  function asString(v) { return ''+v; }
 	  
 	  function writeDetails(div, evt){
-	    var props = [
-	      /Key$/,
-	      /Code$/
-	    ];
 	    var list = dojo.place("<dl></dl>", div);
+	    var details = [
+	      [ "keyCode", asHex ],
+	      [ "charCode", asHex ],
+	      [ "which", asHex ],
+	      [ "keyIdentifier", asString ],
+	      [ "keyLocation", asString ],
+	      [ "shiftKey", asString ],
+	      [ "ctrlKey", asString ],
+	      [ "metaKey", asString ],
+	      [ "altKey", asString ]	      
+	    ];
 	    
-	    for(var key in evt) {
-	      if(key.search(/(Key|Code)$/) > -1) {
-	        dojo.place("<dt>" + key + "</dt>", list);
-	        if(typeof evt[key] != "number") 
-	          dojo.place("<dd>" + evt[key] + "</dd>", list);
-	        else 
-	          dojo.place("<dd>0x" + evt[key].toString(16) + "</dd>", list);
-	        
-	      }
-	    }
+	    dojo.forEach(details, function(n) { writeDetail(n[0], n[1](evt[n[0]]), list); });
+	   
+	    
+	  }
+	  
+	  function writeDetail(key,value,list) {
+	    dojo.place("<dt>" + key + "</dt>", list);
+	    dojo.place("<dd>" + value + "</dd>", list);
 	  }
 	  
 	  function logKeyEvent(name, evt) {
-	    console.log(evt);
+	    console.dir(evt);
 	    var holder = dojo.place("<div class='event'><span class='type'>" + name + "</span><div class='key " + name + "'><h2>" + keyOrCharFromEvent(evt) + "</h2></div><div class='details'></div></div>", dojo.byId("log"));
 	    var details = dojo.place("<div class='details'></div>", holder);
 	    writeDetails(details, evt);
@@ -78,16 +84,25 @@
 	    dojo.query(".event").fadeOut({ onEnd: dojo.destroy }).play();
 	  }
 	  
+	  function prevent(evt) {
+	    console.log("preventing");
+	    if(evt.preventDefault) evt.preventDefault();
+	    else evt.returnValue = false;
+	  }
+	  
 	  function keydownListener(evt) {
 	    logKeyEvent("keydown", evt);
+	    if(dojo.byId("chkPreventDown").checked) prevent(evt);
 	  }
 	  
 	  function keypressListener(evt) {
 	    logKeyEvent("keypress", evt);
+	    if(dojo.byId("chkPreventPress").checked) prevent(evt);
 	  }
 	  
 	  function keyupListener(evt) {
 	    logKeyEvent("keyup", evt);
+	    if(dojo.byId("chkPreventUp").checked) prevent(evt);
 	  }
 	</script>
 	<style type="text/css" media="screen">
@@ -165,7 +180,10 @@
 	</style>
 </head>
 <body>
-  <input type="text" id="theInput" placeholder="Select Me" /> <button id="clearIt" type="button">Clear</button>
+  type here: <input type="text" id="theInput" placeholder="focus!" /> <button id="clearIt" type="button">Clear</button><br />
+  prevent keydown: <input type="checkbox" id="chkPreventDown" /><br />
+  prevent keypress: <input type="checkbox" id="chkPreventPress" /><br />
+  prevent keyup: <input type="checkbox" id="chkPreventUp" />
   <div id="log"></div>
 </body>
 </html>
