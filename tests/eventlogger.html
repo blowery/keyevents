@@ -44,7 +44,7 @@
 	    return "&lt; " + String.fromCharCode(evt.keyCode) + "&gt;";
 	  }
 	  
-	  function asHex(num) { return num === undefined ? "undefined" : isNaN(num) ? "NaN" : "0x" + num.toString(16); };
+	  function asHex(num) { return num === undefined ? "undefined" : isNaN(num) ? "NaN" : num.toString(10) + " (0x" + num.toString(16) + ")"; };
 	  function asString(v) { return ''+v; }
 	  
 	  function writeDetails(div, evt){
@@ -58,7 +58,8 @@
 	      [ "shiftKey", asString ],
 	      [ "ctrlKey", asString ],
 	      [ "metaKey", asString ],
-	      [ "altKey", asString ]	      
+	      [ "altKey", asString ],
+	      [ "repeat", asString ]	      
 	    ];
 	    
 	    dojo.forEach(details, function(n) { writeDetail(n[0], n[1](evt[n[0]]), list); });
