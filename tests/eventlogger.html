@@ -47,7 +47,7 @@
 	      else return evt.keyIdentifier;
       }
 	    if(evt.keyCode in keyUnMap) return keyUnMap[evt.keyCode];
-	    return "[" + evt.keyCode + "]";
+	    return "[VK-" + evt.keyCode + "]";
 	  }
 	  
 	  function asHex(num) { return num === undefined ? "MISSING" : isNaN(num) ? "NaN" : num.toString(10) + " (0x" + num.toString(16) + ")"; };
