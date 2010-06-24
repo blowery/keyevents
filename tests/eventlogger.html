@@ -80,7 +80,7 @@
 	  
 	  function logKeyEvent(name, evt) {
 	    console.dir(evt);
-	    var holder = dojo.place("<div class='event'><span class='type'>" + name + "</span><div class='key " + name + "'><h2>" + keyOrCharFromEvent(evt) + "</h2></div><div class='details'></div></div>", dojo.byId("log"));
+	    var holder = dojo.place("<div class='event'><div class='key " + name + "'><span class='type'>" + name + "</span><h2>" + keyOrCharFromEvent(evt) + "</h2></div><div class='details'></div></div>", dojo.byId("log"));
 	    var details = dojo.place("<div class='details'></div>", holder);
 	    writeDetails(details, evt);
 	    //setTimeout(function() { dojo.fadeOut({ node: holder, onEnd: dojo.destroy }).play(); }, 5000);
@@ -129,10 +129,6 @@
 	   color: rgba(0,0,0,.7);
 	   font-size: .7em;
 	   font-weight: bold;
-	   position: absolute;
-	   left: 0px;
-	   top: 1em;
-	   width: 100%;
 	   text-align: center;
 	 }
 	 
@@ -152,7 +148,7 @@
 	  }
 	   
 	 .event .key {
-	   font-size: 1em;
+	   font-size: .8em;
 	   font-weight: bold;
 	   height: 9em;
  	   width: 9em;
