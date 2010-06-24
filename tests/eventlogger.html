@@ -32,7 +32,7 @@
 	  (function(){
 	    var keys = dojo.keys;
 	    for(var k in keys) {
-	      keyUnMap[keys[k]] = "&lt;" + k + "&gt;";
+	      keyUnMap[keys[k]] = "[" + k + "]";
 	    }
 	    
 	  })();
@@ -40,12 +40,18 @@
 	  function keyOrCharFromEvent(evt) {
 	    if(evt.charCode) return String.fromCharCode(evt.charCode);
 	    if(dojo.isIE && evt.type=="keypress") return String.fromCharCode(evt.keyCode);
+	    if(evt.keyIdentifier) {
+	      if(evt.keyIdentifier.search(/^U\+/) > -1) {
+	        return String.fromCharCode(parseInt(evt.keyIdentifier.substring(2), 16));
+	      } 
+	      else return evt.keyIdentifier;
+      }
 	    if(evt.keyCode in keyUnMap) return keyUnMap[evt.keyCode];
-	    return "&lt; " + String.fromCharCode(evt.keyCode) + "&gt;";
+	    return "[" + evt.keyCode + "]";
 	  }
 	  
-	  function asHex(num) { return num === undefined ? "undefined" : isNaN(num) ? "NaN" : num.toString(10) + " (0x" + num.toString(16) + ")"; };
-	  function asString(v) { return ''+v; }
+	  function asHex(num) { return num === undefined ? "MISSING" : isNaN(num) ? "NaN" : num.toString(10) + " (0x" + num.toString(16) + ")"; };
+	  function asString(v) { return v === undefined ? "MISSING" : ''+v; }
 	  
 	  function writeDetails(div, evt){
 	    var list = dojo.place("<dl></dl>", div);
